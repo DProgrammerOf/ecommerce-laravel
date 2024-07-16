@@ -1,0 +1,10 @@
+# PHP STORM
+.idea
+.DS_Store
+
+# PHP UNIT
+files/.phpunit.result.cache
+files/.phpunit.cache
+
+# COMPOSER
+files/vendor
