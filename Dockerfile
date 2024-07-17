@@ -12,6 +12,7 @@ RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
 RUN docker-php-ext-install gmp
 RUN docker-php-ext-install ftp
+RUN docker-php-ext-install pdo pdo_mysql
 
 # app
 WORKDIR /app
