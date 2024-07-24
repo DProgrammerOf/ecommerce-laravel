@@ -8,3 +8,6 @@ files/.phpunit.cache
 
 # COMPOSER
 files/vendor
+files/composer
+.gitignore
+files/composer.lock

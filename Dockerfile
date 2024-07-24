@@ -17,6 +17,9 @@ RUN docker-php-ext-install pdo pdo_mysql
 # app
 WORKDIR /app
 
+# add composer path
+ENV PATH="$PATH:/composer"
+
 # entrypoint.sh
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
