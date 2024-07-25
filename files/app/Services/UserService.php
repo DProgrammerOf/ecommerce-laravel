@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -12,6 +13,11 @@ class UserService
     public function __construct()
     {
         $this->users = new User();
+    }
+
+    public function getUsers(): Collection
+    {
+        return $this->users->all();
     }
 
     private function getUserById(int $value): User|null
@@ -58,6 +64,11 @@ class UserService
     private function checkUserPassword(string $value, User $user): User|null
     {
         return Hash::check($value, $user->password) ? $user : null;
+    }
+
+    public function createToken(User $user): string
+    {
+        return $user->createToken('access.basic')->accessToken;
     }
 
 }

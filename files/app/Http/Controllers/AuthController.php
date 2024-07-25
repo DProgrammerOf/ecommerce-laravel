@@ -17,11 +17,11 @@ class AuthController extends Controller
     /**
      * authenticate validate
      */
-    public function index(Request $request): JsonResponse
+    public function test(): JsonResponse
     {
         //
         return $this->to_response(
-            false, 'invalid token', 401
+            true, 'Authenticated.'
         );
     }
 
@@ -48,13 +48,17 @@ class AuthController extends Controller
         !$user && $user = $this->userService->checkUserByCpf($username, $password);
         // returns
         if ($user) {
+            // token
+            $token = $this->userService->createToken($user);
             return $this->to_response(
-                true, 'authenticated'
+                true, 'Authenticated.', 200, [
+                    'token' => $token
+                ]
             );
         }
         else {
             return $this->to_response(
-                false, 'unauthenticated'
+                false, 'Unauthenticated.'
             );
         }
     }

@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
 
 /**
  *
@@ -12,8 +13,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method where(string $string, string $value)
  * @method find(int $value)
  */
-class User extends Model
+class User extends Authenticatable
 {
+    use HasApiTokens;
+
     public $table = 'users';
     public $timestamps = true;
+
+
 }
