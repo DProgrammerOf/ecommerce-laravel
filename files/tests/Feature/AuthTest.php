@@ -122,14 +122,14 @@ class AuthTest extends TestCase
     {
         $token = '';
         $response = $this->getJson(
-            'api/auth',
+            'api/auth/test',
             [
-                'auth_token' => $token
+                'Authorization' => 'Bearer '.$token
             ]
         );
         $response
             ->assertStatus(401)
-            ->assertJson(['message' => 'invalid token']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     }
 
     /**
@@ -137,15 +137,28 @@ class AuthTest extends TestCase
      */
     public function test_token_valid(): void
     {
-        $token = '#!#!#!';
-        $response = $this->getJson(
-            'api/auth',
+        $response = $this->postJson(
+            'api/auth/basic',
             [
-                'auth_token' => $token
+                'username' => 'johndoe',
+                'password' => 'password'
             ]
         );
         $response
             ->assertStatus(200)
             ->assertJson(['success' => true]);
+        $this->assertNotNull($response['data']);
+        $this->assertNotNull($response['data']['token']);
+
+        $token = $response['data']['token'];
+        $response = $this->getJson(
+            'api/auth/test',
+            [
+                'Authorization' => 'Bearer '.$token
+            ]
+        );
+        $response
+            ->assertStatus(200)
+            ->assertJson(['message' => 'Authenticated.']);
     }
 }
