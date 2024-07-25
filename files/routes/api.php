@@ -1,8 +1,15 @@
 <?php
 
-use Illuminate\Http\Request;
+// controllers
+use App\Http\Controllers\AuthController;
+//
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
+
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/auth', 'index');
+    Route::post('/auth/basic', 'basic');
+    Route::post('/auth/oauth', 'oauth');
+});
+
+
