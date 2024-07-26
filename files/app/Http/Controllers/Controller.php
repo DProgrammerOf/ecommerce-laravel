@@ -11,10 +11,10 @@ abstract class Controller
      * @param bool $status
      * @param $message
      * @param int $code
-     * @param null $obj
+     * @param array|null $obj
      * @return JsonResponse
      */
-    protected function to_response(bool $status, $message, int $code = 200, $obj = null): JsonResponse
+    protected function to_response(bool $status, $message, int $code = 200, mixed $obj = null): JsonResponse
     {
         return response()->json([
             'success' => $status,
