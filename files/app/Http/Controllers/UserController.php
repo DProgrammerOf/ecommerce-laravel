@@ -33,8 +33,10 @@ class UserController extends Controller
     public function get(int $id): JsonResponse
     {
         $user = $this->userService->getUserById($id);
+        $message = $user ? '' : 'user not found';
+
         return $this->to_response(
-            true, '', 200, $user
+            (bool)$user, $message, 200, ['user' => $user]
         );
     }
 
@@ -53,9 +55,44 @@ class UserController extends Controller
             'date_of_birth' => 'required|date',
             'reference' => 'nullable|string',
         ]);
-        //
+
+        // create user
+        $user_id = 0;
+        $message = '';
+        try {
+            $user_id = $this->userService->create($request->all());
+        } catch (\Throwable $throwable) {
+            return $this->to_response(
+                false, $throwable->getMessage()
+            );
+        }
         return $this->to_response(
-            false, '', 200, []
+            true, $message, 200, ['user_id' => $user_id]
+        );
+    }
+
+    /**
+     * remove user
+     */
+    public function remove(Request $request): JsonResponse
+    {
+        // validate params to create
+        $request->validate([
+            'id' => 'required|integer'
+        ]);
+
+        // create user
+        $id = $request->input('id');
+        $message = '';
+        try {
+            $this->userService->remove($id) && $message = 'user deleted';
+        } catch (\Throwable $throwable) {
+            return $this->to_response(
+                false, $throwable->getMessage()
+            );
+        }
+        return $this->to_response(
+            true, $message
         );
     }
 }

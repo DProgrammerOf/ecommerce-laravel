@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
+use Throwable;
 
 class UserService
 {
@@ -102,4 +104,32 @@ class UserService
         return $user->createToken('access.basic')->accessToken;
     }
 
+    /**
+     * Create new user
+     * @throws Throwable
+     */
+    public function create(array $data): int
+    {
+        $user = new User($data);
+        if (!$user->saveOrFail()) {
+            throw new ModelNotFoundException('user not found');
+        }
+        return $user->id;
+    }
+
+    /**
+     * Remove user
+     * @throws Throwable
+     */
+    public function remove(int $id): bool
+    {
+        $user = $this->users->find($id);
+        if (!$user) {
+            throw new ModelNotFoundException('user not found');
+        }
+        if (!$user->deleteOrFail()) {
+            throw new ModelNotFoundException('problem to delete user');
+        }
+        return true;
+    }
 }

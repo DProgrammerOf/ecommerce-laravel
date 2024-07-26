@@ -16,6 +16,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(UserController::class)->group(function () {
     Route::get('/users/all', 'all');
-    Route::get('/users/get/{id}', 'get');
     Route::post('/users/create', 'create');
+    Route::get('/users/get/{id}', 'get');
+    Route::delete('/users/remove', 'remove');
 })->middleware('auth:api');
