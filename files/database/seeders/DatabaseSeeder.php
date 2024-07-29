@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             ProductsTableSeeder::class,
             CartsTableSeeder::class,
             OrdersTableSeeder::class,
+            OAuthClients::class,
+            OAuthPersonalAccessClients::class
         ]);
     }
 }
