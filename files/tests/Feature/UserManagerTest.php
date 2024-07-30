@@ -7,7 +7,7 @@ use Tests\TestCase;
 class UserManagerTest extends TestCase
 {
     private string $token = '0981ed2dc48b67053d1b16c748eb9d3a2c0a82fc7e0317851fb78194c36ee2cbd39fe2d935abeb05';
-    private static int $user_id = 0;
+    private int $user_id = 66;
 
     /**
      * Create user invalid (missing cpf)
@@ -43,6 +43,7 @@ class UserManagerTest extends TestCase
         $response = $this->postJson(
             'api/users/create',
             [
+                'id' => $this->user_id,
                 'username' => 'renan_test',
                 'password' => '123456',
                 'full_name' => 'Renan Test',
@@ -60,7 +61,6 @@ class UserManagerTest extends TestCase
             ->assertJson(['success' => true]);
 
         $this->assertNotNull($response['data']['user_id']);
-        $this::$user_id = $response->json('data')['user_id'];
     }
 
     /**
@@ -90,6 +90,67 @@ class UserManagerTest extends TestCase
     }
 
     /**
+     * Edit user invalid (missing params)
+     */
+    public function test_user_edit_invalid(): void
+    {
+        $response = $this->patchJson(
+            'api/users/edit',
+            [
+            ],
+            [
+                'Authorization' => 'Bearer '.$this->token
+            ]
+        );
+        $response
+            ->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors']);
+    }
+
+    /**
+     * Edit user invalid (not exist)
+     */
+    public function test_user_edit_invalid_not_exist(): void
+    {
+        $id = 0;
+        $response = $this->patchJson(
+            'api/users/edit',
+            [
+                'id' => $id,
+                'password' => '123456789',
+            ],
+            [
+                'Authorization' => 'Bearer '.$this->token
+            ]
+        );
+        $response
+            ->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors']);
+    }
+
+    /**
+     * Edit user invalid (params)
+     */
+    public function test_user_edit_valid(): void
+    {
+        $id = $this->user_id;
+        $response = $this->patchJson(
+            'api/users/edit',
+            [
+                'id' => $id,
+                'username' => 'renan_test_edited',
+                'password' => '123456789',
+            ],
+            [
+                'Authorization' => 'Bearer '.$this->token
+            ]
+        );
+        $response
+            ->assertStatus(200)
+            ->assertJson(['success' => true, 'message' => 'user edited']);
+    }
+
+    /**
      * Get data of all users
      */
     public function test_user_get_all(): void
@@ -110,7 +171,7 @@ class UserManagerTest extends TestCase
      */
     public function test_user_get_one(): void
     {
-        $id = $this::$user_id;
+        $id = $this->user_id;
         $response = $this->getJson(
             'api/users/get/'.$id,
             [
@@ -145,11 +206,9 @@ class UserManagerTest extends TestCase
      */
     public function test_user_remove_invalid_params(): void
     {
-        $id = 0;
         $response = $this->deleteJson(
             'api/users/remove',
             [
-
             ],
             [
                 'Authorization' => 'Bearer '.$this->token
@@ -177,7 +236,7 @@ class UserManagerTest extends TestCase
         );
         $response
             ->assertStatus(200)
-            ->assertJson(['success' => false, 'message' => 'user not found']);
+            ->assertJson(['success' => false, 'message' => 'delete failed']);
     }
 
     /**
@@ -185,7 +244,7 @@ class UserManagerTest extends TestCase
      */
     public function test_user_remove_one(): void
     {
-        $id = $this::$user_id;
+        $id = $this->user_id;
         $response = $this->deleteJson(
             'api/users/remove',
             [
