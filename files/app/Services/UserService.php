@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
 
@@ -112,9 +111,22 @@ class UserService
     {
         $user = new User($data);
         if (!$user->saveOrFail()) {
-            throw new ModelNotFoundException('user not found');
+            return false;
         }
         return $user->id;
+    }
+
+    /**
+     * Edit user
+     * @throws Throwable
+     */
+    public function edit(int $id, array $data): bool
+    {
+        $user = $this->users->find($id);
+        if (!$user->updateOrFail($data)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -124,11 +136,8 @@ class UserService
     public function remove(int $id): bool
     {
         $user = $this->users->find($id);
-        if (!$user) {
-            throw new ModelNotFoundException('user not found');
-        }
-        if (!$user->deleteOrFail()) {
-            throw new ModelNotFoundException('problem to delete user');
+        if (!$user?->deleteOrFail()) {
+            return false;
         }
         return true;
     }

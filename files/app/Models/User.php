@@ -25,7 +25,7 @@ class User extends Authenticatable
      * columns to fill by create
      */
     protected $fillable = [
-        'username', 'password', 'full_name', 'email', 'cpf', 'date_of_birth', 'reference'
+        'id', 'username', 'password', 'full_name', 'email', 'cpf', 'date_of_birth', 'reference'
     ];
 
 

@@ -18,5 +18,6 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/users/all', 'all');
     Route::post('/users/create', 'create');
     Route::get('/users/get/{id}', 'get');
+    Route::patch('/users/edit', 'edit');
     Route::delete('/users/remove', 'remove');
 })->middleware('auth:api');
