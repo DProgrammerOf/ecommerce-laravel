@@ -1,0 +1,24 @@
+services:
+  backend:
+    container_name: backend-fastecomm
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./files:/app
+    networks:
+      - ecommerce-net
+
+  database:
+    container_name: db-fastecomm
+    image: mariadb:11.2.4
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+    ports:
+      - "3306:3306"
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+    driver: bridge
