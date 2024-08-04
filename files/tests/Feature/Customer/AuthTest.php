@@ -1,11 +1,8 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Customer;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use function PHPUnit\Framework\assertJson;
 
 class AuthTest extends TestCase
 {
@@ -122,7 +119,7 @@ class AuthTest extends TestCase
     {
         $token = '';
         $response = $this->getJson(
-            'api/auth/test',
+            'api/auth/basic/test',
             [
                 'Authorization' => 'Bearer '.$token
             ]
@@ -152,7 +149,7 @@ class AuthTest extends TestCase
 
         $token = $response['data']['token'];
         $response = $this->getJson(
-            'api/auth/test',
+            'api/auth/basic/test',
             [
                 'Authorization' => 'Bearer '.$token
             ]
