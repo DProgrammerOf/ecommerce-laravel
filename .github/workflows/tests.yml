@@ -2,7 +2,7 @@ name: E-commerce tests
 
 on:
   push:
-    branches: [ "actions" ]
+    branches: [ "tests" ]
 
 jobs:
   run-test:
