@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AdminService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,14 +11,26 @@ class AuthController extends Controller
 {
 
     public function __construct(
-        protected UserService $userService
+        protected UserService $userService,
+        protected AdminService $adminService,
     )
     {}
 
     /**
-     * authenticate validate
+     * authenticate test to customers
      */
-    public function test(): JsonResponse
+    public function test_user(): JsonResponse
+    {
+        //
+        return $this->to_response(
+            true, 'Authenticated.'
+        );
+    }
+
+    /**
+     * authenticate test to admin
+     */
+    public function test_admin(): JsonResponse
     {
         //
         return $this->to_response(
@@ -71,6 +84,38 @@ class AuthController extends Controller
         //
         return $this->to_response(
             false, 'invalid request'
+        );
+    }
+
+    /**
+     * authenticate admin by username
+     */
+    public function admin(Request $request): JsonResponse
+    {
+        // validate params to auth
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'password' => 'required|string|min:6',
+        ]);
+        // get credentials
+        [$username, $password] = [
+            $request->input('username'),
+            $request->input('password')
+        ];
+        // verify exist user and get if any
+        $admin = $this->adminService->checkUserByName($username, $password);
+        if ($admin) {
+            // token
+            $token = $this->adminService->createToken($admin);
+            return $this->to_response(
+                true, 'Authenticated.', 200, [
+                    'token' => $token
+                ]
+            );
+        }
+        //
+        return $this->to_response(
+            false, 'Unauthenticated.'
         );
     }
 }
