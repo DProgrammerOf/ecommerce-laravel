@@ -2,8 +2,8 @@
 
 // controllers
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-//
+use App\Http\Controllers\Customer\UserController;
+use App\Http\Controllers\Customer\LocalController;
 use Illuminate\Support\Facades\Route;
 //
 
