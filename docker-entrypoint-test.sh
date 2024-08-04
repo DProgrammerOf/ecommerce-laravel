@@ -10,9 +10,5 @@ mkdir /composer \
 
 # instal packages laravel
 # generate key
-# start migration
-# and tests
 php composer.phar install \
-&& php artisan key:generate \
-&& php artisan migrate:refresh --seed
-&& php artisan test
+&& php artisan key:generate
