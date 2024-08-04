@@ -1,0 +1,23 @@
+FROM php:8.3-cli
+
+# git
+RUN apt-get -y update
+RUN apt-get -y install git
+RUN apt-get -y install zip
+RUN apt-get -y install libgmp-dev
+
+# ext to laravel
+RUN docker-php-ext-install gmp
+RUN docker-php-ext-install ftp
+RUN docker-php-ext-install pdo pdo_mysql
+
+# app
+WORKDIR /app
+
+# add composer path
+ENV PATH="$PATH:/composer"
+
+# entrypoint.sh
+COPY docker-entrypoint-test.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
