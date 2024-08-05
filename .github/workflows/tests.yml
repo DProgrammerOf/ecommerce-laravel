@@ -7,8 +7,9 @@ on:
 jobs:
   run-test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Verify files in directory
         run: ls -la
@@ -17,17 +18,20 @@ jobs:
         run: docker compose -f docker-compose-test.yml up -d
 
       - name: Run tests in the back-end
-        id: run-tests
+        id: exec-tests
         run: |
-          output=$(docker exec -t backend-fastecomm /bin/bash tests.sh)
-          echo "$output"
-          echo "::set-output name=test-result::$output"
+          echo "tests_result=$(docker exec -t backend-fastecomm /bin/bash tests.sh)" >> $GITHUB_OUTPUT
+
+      - name: Show test results
+        env:
+          TESTS_RESULT: ${{ steps.exec-tests.outputs.tests_result }}
+        run: echo "$TESTS_RESULT"
   
       - name: Check test results
-        if: ${{ steps.run-tests.outputs.test-result != 'Tests Ok!' }}
+        if: ${{ !contains(steps.exec-tests.outputs.tests_result, 'Tests Ok') }}
         run: exit 1
         continue-on-error: false
   
       - name: Continue if tests passed
-        if: ${{ steps.run-tests.outputs.test-result == 'Tests Ok!' }}
+        if: ${{ contains(steps.exec-tests.outputs.tests_result, 'Tests Ok') }}
         run: echo "Tests passed successfully."
