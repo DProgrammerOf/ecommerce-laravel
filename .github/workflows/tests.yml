@@ -9,7 +9,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Directory
+
+      - name: Verify files in directory
         run: ls -la
+
       - name: Build the containers
         run: docker compose -f docker-compose-test.yml up -d
+
+      - name: Run tests in the back-end
+        id: run-tests
+        run: |
+          output=$(docker exec -t backend-fastecomm /bin/bash tests.sh)
+          echo "$output"
+          echo "::set-output name=test-result::$output"
+  
+      - name: Check test results
+        if: ${{ steps.run-tests.outputs.test-result != 'Tests Ok!' }}
+        run: exit 1
+        continue-on-error: false
+  
+      - name: Continue if tests passed
+        if: ${{ steps.run-tests.outputs.test-result == 'Tests Ok!' }}
+        run: echo "Tests passed successfully."

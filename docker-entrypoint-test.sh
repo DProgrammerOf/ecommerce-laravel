@@ -8,6 +8,9 @@ mkdir /composer \
 && cp composer.phar /composer/composer \
 && chmod 775 /composer/composer
 
+# tests.sh
+chmod +x tests.sh
+
 # instal packages laravel
 # generate key
 php composer.phar install \
